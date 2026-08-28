@@ -1,0 +1,6 @@
+{
+  "name": "Khatabook & Personal Ledger",
+  "description": "A modern personal money, borrow/lend ledger, and expense management application with person-by-person transaction history and settlement tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
