@@ -24,7 +24,7 @@ import { AuthPage } from './components/auth/AuthPage';
 import { Database } from 'lucide-react';
 
 const MainAppContent: React.FC = () => {
-  const { people } = useData();
+  const { people, addPerson, updatePerson } = useData();
 
   // Navigation State
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
@@ -122,11 +122,11 @@ const MainAppContent: React.FC = () => {
         activeTab={activeTab}
         onNavigate={(tab) => {
           setActiveTab(tab);
-          if (tab !== 'people') setSelectedPersonId(null);
+          if (tab !== "people") setSelectedPersonId(null);
         }}
         onOpenSearch={() => setIsGlobalSearchOpen(true)}
         onOpenAddPerson={handleOpenAddPerson}
-        onOpenAddTransaction={() => handleOpenAddTransaction('gave')}
+        onOpenAddTransaction={() => handleOpenAddTransaction("gave")}
         onOpenAddExpense={handleOpenAddExpense}
         onOpenSplitExpense={() => setIsSplitExpenseOpen(true)}
         onOpenAuth={() => setIsAuthModalOpen(true)}
@@ -139,20 +139,20 @@ const MainAppContent: React.FC = () => {
           activeTab={activeTab}
           onNavigate={(tab) => {
             setActiveTab(tab);
-            if (tab !== 'people') setSelectedPersonId(null);
+            if (tab !== "people") setSelectedPersonId(null);
           }}
           onOpenAddPerson={handleOpenAddPerson}
-          onOpenAddTransaction={() => handleOpenAddTransaction('gave')}
+          onOpenAddTransaction={() => handleOpenAddTransaction("gave")}
           onOpenSplitExpense={() => setIsSplitExpenseOpen(true)}
         />
 
         {/* Dynamic Protected Views */}
         <main className="flex-1 min-w-0 pb-20 md:pb-8">
-          {activeTab === 'dashboard' && (
+          {activeTab === "dashboard" && (
             <DashboardView
               onNavigate={(tab) => {
                 setActiveTab(tab);
-                if (tab !== 'people') setSelectedPersonId(null);
+                if (tab !== "people") setSelectedPersonId(null);
               }}
               onSelectPerson={handleSelectPerson}
               onOpenAddPerson={handleOpenAddPerson}
@@ -163,11 +163,11 @@ const MainAppContent: React.FC = () => {
             />
           )}
 
-          {activeTab === 'people' && (
+          {activeTab === "people" && (
             <>
               {selectedPerson ? (
                 <PersonLedgerView
-                  person={selectedPerson}
+                  personId={selectedPerson.id}
                   onBack={handleBackToPeopleList}
                   onOpenAddTransaction={handleOpenAddTransaction}
                   onOpenSettleUp={handleOpenSettleUp}
@@ -186,15 +186,15 @@ const MainAppContent: React.FC = () => {
             </>
           )}
 
-          {activeTab === 'transactions' && (
+          {activeTab === "transactions" && (
             <TransactionsView
-              onOpenAddTransaction={() => handleOpenAddTransaction('gave')}
+              onOpenAddTransaction={() => handleOpenAddTransaction("gave")}
               onEditTransaction={handleEditTransaction}
               onSelectPerson={handleSelectPerson}
             />
           )}
 
-          {activeTab === 'expenses' && (
+          {activeTab === "expenses" && (
             <ExpensesView
               onOpenAddExpense={handleOpenAddExpense}
               onOpenSplitExpense={() => setIsSplitExpenseOpen(true)}
@@ -203,11 +203,11 @@ const MainAppContent: React.FC = () => {
             />
           )}
 
-          {activeTab === 'analytics' && (
+          {activeTab === "analytics" && (
             <AnalyticsView onSelectPerson={handleSelectPerson} />
           )}
 
-          {activeTab === 'settings' && (
+          {activeTab === "settings" && (
             <SettingsView onOpenAuthModal={() => setIsAuthModalOpen(true)} />
           )}
         </main>
@@ -218,18 +218,28 @@ const MainAppContent: React.FC = () => {
         activeTab={activeTab}
         onNavigate={(tab) => {
           setActiveTab(tab);
-          if (tab !== 'people') setSelectedPersonId(null);
+          if (tab !== "people") setSelectedPersonId(null);
         }}
-        onOpenAddTransaction={() => handleOpenAddTransaction('gave')}
+        onOpenAddTransaction={() => handleOpenAddTransaction("gave")}
       />
 
       {/* Modals */}
       <AddPersonModal
         isOpen={isAddPersonOpen}
-        onClose={() => setIsAddPersonOpen(false)}
+        onClose={() => {
+          setIsAddPersonOpen(false);
+          setPersonToEdit(null);
+        }}
         personToEdit={personToEdit}
-      />
+        onSubmit={async (data) => {
+          if (personToEdit) {
+            return await updatePerson(personToEdit.id, data);
+          }
 
+          const created = await addPerson(data);
+          return created !== null;
+        }}
+      />
       <AddTransactionModal
         isOpen={isAddTxOpen}
         onClose={() => setIsAddTxOpen(false)}
@@ -261,11 +271,11 @@ const MainAppContent: React.FC = () => {
         onClose={() => setIsGlobalSearchOpen(false)}
         onNavigate={(tab) => {
           setActiveTab(tab);
-          if (tab !== 'people') setSelectedPersonId(null);
+          if (tab !== "people") setSelectedPersonId(null);
         }}
         onSelectPerson={handleSelectPerson}
         onOpenAddPerson={handleOpenAddPerson}
-        onOpenAddTransaction={() => handleOpenAddTransaction('gave')}
+        onOpenAddTransaction={() => handleOpenAddTransaction("gave")}
         onOpenAddExpense={handleOpenAddExpense}
         onOpenSplitExpense={() => setIsSplitExpenseOpen(true)}
       />
